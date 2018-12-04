@@ -1,5 +1,5 @@
 -- file: tar_3.hs
--- abuhay abune
+-- abuhay abune 319311759
 --Tar 3 :Hanoi towers, tracking the steps with the writer monad 
 
 --A function that adds a random number every "even" time it used and subtracts a random number every "odd" time it is used (state monad) 
@@ -9,28 +9,16 @@ import Control.Monad.State
 
 ---- q1
 type Peg  = String
-type Move = (Peg,Peg)
 
-hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
-hanoi 0 _      _      _     = []
-hanoi 1 source target _     = [(source,target)]
-hanoi n source target spare = hanoi (n-1) source spare target ++
-                              hanoi 1 source target spare ++
-                              hanoi (n-1) spare target source
+hanoi_ :: Integer -> Peg -> Peg -> Peg -> Writer [String] ()
+hanoi_ 1 source target _     = tell ["Move " ++ source ++" -> "++ target]
+hanoi_ n source target spare = do
+                              hanoi_ (n-1) source spare target
+                              hanoi_ 1 source target spare
+                              hanoi_ (n-1) spare target source
 
 
-calc :: Integer -> Writer [String] ()
-calc n = do
-  tell ["start"]
-  hanoiShow $ hanoi n "a" "b" "c"
-
-hanoiShow :: [Move] -> Writer [String] ()
-hanoiShow []     = tell ["done"]
-hanoiShow (x:xs) = do
-  tell ["Move " ++ (fst x) ++" -> "++ (snd x)]
-  hanoiShow xs
-
-test n = mapM_ putStrLn $ execWriter $ calc n
+hanoi n = mapM_ putStrLn $ execWriter $ hanoi_ n "a" "b" "c"
 
 ----q2
 
@@ -61,6 +49,6 @@ eventTime t = fmap even t
 
 -- Parse a floating point number
 
-main = do test 2
-          test 3
+main = do hanoi 2
+          hanoi 3
 -}
