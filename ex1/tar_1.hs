@@ -68,7 +68,7 @@ myElem2 x xs = (not.null) [y | y <- xs , y == x]
 --- sublist from i'th to j'th element 
 
 mySubList :: Int -> Int -> [a] -> [a]
-mySubList i j xs = take (j-i) $ drop (i-1) xs
+mySubList i j xs = take (j-i) $ drop i xs
 
 
 -------------------------------q5------------------------------------------------------
@@ -77,9 +77,9 @@ mySubList i j xs = take (j-i) $ drop (i-1) xs
 data Tree a = Node (Tree a) a (Tree a) 
             | Leaf deriving (Show, Read)
 
-instance Foldable Tree where
-     foldr f acc Leaf = acc
-     foldr f acc (Node l x r) = foldr f (f x (foldr f acc r)) l
+--instance Foldable Tree where
+--     foldr f acc Leaf = acc
+--     foldr f acc (Node l x r) = foldr f (f x (foldr f acc r)) l
 
 singleton :: a -> Tree a
 singleton x = Node Leaf x Leaf
@@ -98,5 +98,14 @@ treeElem x (Node left y right)
     | x < y        = treeElem x left
     | x > y        = treeElem x right
 
-treeSum :: (Num a) =>Tree a -> a
-treeSum = foldr (+) 0
+--treeSum :: (Num a) =>Tree a -> a
+--treeSum = foldr (+) 0
+
+treeMap :: (a -> b) -> Tree a -> Tree b
+treeMap f Leaf         = Leaf
+treeMap f (Node l a r) = Node (treeMap f l) (f a) (treeMap f r)
+
+treeFoldr :: (Num t1) => (t1 -> t2 -> t2) -> t2 -> Tree t1 -> t2
+treeFoldr f acc Leaf         = acc
+treeFoldr f acc (Node l x r) = treeFoldr f (f x (treeFoldr f acc r)) l
+

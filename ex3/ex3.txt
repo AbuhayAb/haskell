@@ -1,0 +1,10 @@
+Tar 3
+Hanoi towers, tracking the steps with the writer monad 
+
+ 
+
+A function that adds a random number every "even" time it used and subtracts a random number every "odd" time it is used (state monad) 
+
+
+ Parse a floating point number
+
