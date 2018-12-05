@@ -1,13 +1,12 @@
 -- file: tar_3.hs
--- abuhay abune 319311759
---Tar 3 :Hanoi towers, tracking the steps with the writer monad 
+-- abuhay abune
+-- tar 3  
 
---A function that adds a random number every "even" time it used and subtracts a random number every "odd" time it is used (state monad) 
 import Control.Monad
 import Control.Monad.Trans.Writer
 import Control.Monad.State
 
----- q1
+---- q1: Hanoi towers, tracking the steps with the writer monad 
 type Peg  = String
 
 hanoi_ :: Integer -> Peg -> Peg -> Peg -> Writer [String] ()
@@ -20,35 +19,10 @@ hanoi_ n source target spare = do
 
 hanoi n = mapM_ putStrLn $ execWriter $ hanoi_ n "a" "b" "c"
 
-----q2
 
-fromStoAandS :: Int -> (String,Int)
-fromStoAandS c | c `mod` 2 == 0 = ("even",c+1)
-               | otherwise      = ("odd",c+1)
+--- q2: A function that adds a random number every "even" time it used 
+--and subtracts a random number every "odd" time it is used (state monad) 
 
-stateIntString :: State Int String 
-stateIntString = state fromStoAandS
-
-{-
-type RandomState a = State StdGen a
-rand :: IO Int
-rand = getStdRandom (randomR (0,maxBound))
-
-getRandom :: Random a => RandomState a
-getRandom = get >>= \gen -> 
-            let (val,gen') = random gen in
-            put gen' >>
-            return val
+--- q3: Parse a floating point number
 
 
-
-eventTime :: IO Integer -> IO Bool
-eventTime t = fmap even t
-
---func :: Integer => IO Intger
-
--- Parse a floating point number
-
-main = do hanoi 2
-          hanoi 3
--}
