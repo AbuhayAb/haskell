@@ -1,3 +1,4 @@
+{-
 import Control.Monad.Writer  
 import Control.Monad.State 
 import System.Random
@@ -118,4 +119,16 @@ countApplications = do
     increaseApplicationCount
     increaseApplicationCount
 
+-}
+
+import Text.ParserCombinators.Parsec
+import qualified Text.ParserCombinators.Parsec.Token as P
+import Text.ParserCombinators.Parsec.Language (emptyDef)
+
+parseFloat :: GenParser Char st Double
+parseFloat = do sign <- option 1 (do s <- oneOf "+-"
+                                     return $ if s == '-' then-1.0 else 1.0)
+                x    <- P.float $ P.makeTokenParser emptyDef
+
+                return $ sign * x
 
