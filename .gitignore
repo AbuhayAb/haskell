@@ -21,3 +21,6 @@ cabal.project.local~
 .HTF/
 .ghc.environment.*
 *.swp
+.Rhistory
+ex2/tar
+ex3/ex3.txt
