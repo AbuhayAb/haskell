@@ -4,11 +4,11 @@
 --q1: Use “fix” to compute addition using only
 -- “succ”, "pred" and  "test for zero" as primitives
 import Control.Monad.Fix
-
+{-
 plus :: Int -> Int -> Int 
 plus n 0 = n
 plus n m = plus (succ n) (pred m)
-
+-}
 -- show Fluffy instances
 class Fluffy f where
   furry :: (a -> b) -> f a -> f b
