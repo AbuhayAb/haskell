@@ -1,5 +1,6 @@
 --- file : exam2.hs
 --- name : abuhay abune 
+--- grade: 80
 
 import Data.Char
 import Control.Monad (replicateM)
@@ -16,12 +17,12 @@ import Numeric (showHex, showIntAtBase)
 -- Part 1: My sol
 --q1
 parseBin1 :: String -> String
-parseBin1 (x:xs) = do if x == '-'
-                       then (x : isBin xs)               ---- (-15)
-                       else isBin (x:xs)
+parseBin1 (x:xs) = if x == '-'
+                   then isBin xs (-1)               ---- (-15)
+                   else isBin (x:xs) 1
 
-isBin :: String -> String
-isBin xs = xs
+isBin :: String -> Int ->String
+isBin xs sign = xs
 
 --q2                                                     ---- No change
 fac n = fix (\f k m ->
@@ -88,7 +89,7 @@ manyP p = many1 p <|> many0
                             xs <- manyP p
                             return $ x:xs
 
-oneOrZero = (token '1') `chooseP` (token '0')
+oneOrZero = (token '1' >>= \_ -> return 1) `chooseP` (token '0' >>= \_ -> return 0)
 
 parseBin :: String -> (Maybe Int, String)
 parseBin x = case doParse (token '-') x of
@@ -97,16 +98,14 @@ parseBin x = case doParse (token '-') x of
 
 parseBin' :: String -> Int ->(Maybe Int,String)
 parseBin' x sign = case doParse (manyP oneOrZero) x of
-                      [("",xs)] -> (Nothing,xs)
+                      [([],xs)] -> (Nothing,xs)
                       [(y,ys)]  -> (Just num,ys)
                                    where num = sign * n
-                                         n   = binaryToDecimal y
+                                         n   = bin2Dec y
 
-binaryToDecimal :: String -> Int
-binaryToDecimal xs = foldl (+) 0 num2
-                      where num2 = [ x*y | (x,y) <- zip rhs lhs ]
-                            rhs  = fmap digitToInt xs
-                            lhs  = reverse ([2^t | t <- [0..((length xs)-1)]])
+bin2Dec :: [Int] -> Int
+bin2Dec []     = 0
+bin2Dec (x:xs) = x * 2^(length xs) + bin2Dec xs
 
 
 --q3 fix
