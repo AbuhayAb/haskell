@@ -88,29 +88,25 @@ manyP p = many1 p <|> many0
                             xs <- manyP p
                             return $ x:xs
 
-binNum = (token '1') `chooseP` (token '0')
+oneOrZero = (token '1') `chooseP` (token '0')
 
-parseBin :: String -> (Maybe Int,String)
-parseBin  x = case doParse (token '-') x of
-             []             -> f ans
-                               where ans = (1, fst num, snd num)
-                                     num    = (doParse (manyP binNum) x) !! 0
-             [('-',xs)]     -> f ans
-                               where ans  = (-1, fst num, snd num)
-                                     num  = (doParse (manyP binNum) xs) !! 0
+parseBin :: String -> (Maybe Int, String)
+parseBin x = case doParse (token '-') x of
+                []          -> parseBin' x 1
+                [(_,xs)]    -> parseBin' xs (-1)
 
-f :: (Int,String,String) -> (Maybe Int,String)
-f (x,ys,xs)
-        | ys == "" = (Nothing,xs)
-        | ys == "-" = (Nothing, "-" ++ xs)
-        | otherwise = (Just $ x * (getInt ys), xs)
+parseBin' :: String -> Int ->(Maybe Int,String)
+parseBin' x sign = case doParse (manyP oneOrZero) x of
+                      [("",xs)] -> (Nothing,xs)
+                      [(y,ys)]  -> (Just num,ys)
+                                   where num = sign * n
+                                         n   = binaryToDecimal y
 
-
-getInt :: String -> Int
-getInt xs = foldl (+) 0 num2
-            where num2 = [ x*y | (x,y) <- zip rhs lhs ]
-                  rhs  = fmap digitToInt xs
-                  lhs  = reverse ([2^t | t <- [0..((length xs)-1)]])
+binaryToDecimal :: String -> Int
+binaryToDecimal xs = foldl (+) 0 num2
+                      where num2 = [ x*y | (x,y) <- zip rhs lhs ]
+                            rhs  = fmap digitToInt xs
+                            lhs  = reverse ([2^t | t <- [0..((length xs)-1)]])
 
 
 --q3 fix
