@@ -142,6 +142,7 @@ moppy (x:xs) f = apple (moppy xs f) (furry' (:) (f x))
 -- (bonus: use moppy)
 sausage :: (Misty m) => [m a] -> m [a]
 sausage ma  = moppy ma id
+--sausage = flip moppy id
 
 -- Exercise 16
 -- Relative Difficulty: 6
@@ -151,6 +152,7 @@ sausage ma  = moppy ma id
 --       : (a -> (b -> c)) -> ma -> m (b -> c)
 banana2 :: (Misty m) => (a -> b -> c) -> m a -> m b -> m c
 banana2 f ma mb = apple mb $ furry' f ma
+-- banana2 = (flip apple . ) . furry'
 
 -- Exercise 17
 -- Relative Difficulty: 6
@@ -159,6 +161,7 @@ banana2 f ma mb = apple mb $ furry' f ma
 -- banana2: (a -> b -> (c -> d) -> m a -> m b -> m (c -> d)
 banana3 :: (Misty m) => (a -> b -> c -> d) -> m a -> m b -> m c -> m d
 banana3 f ma mb mc = apple mc $ banana2 f ma mb 
+-- banana3 = ((flip apple . ) .) . furry'
 
 -- Exercise 18
 -- Relative Difficulty: 6
@@ -167,6 +170,7 @@ banana3 f ma mb mc = apple mc $ banana2 f ma mb
 -- banana3: (a -> b -> c -> (d -> e)) -> m a -> m b -> m c -> m (d -> e)
 banana4 :: (Misty m) => (a -> b -> c -> d -> e) -> m a -> m b -> m c -> m d -> m e
 banana4 f ma mb mc md = apple md $ banana3 f ma mb mc
+-- banana3 = (((flip apple . ) . ) . ) . furry'
 
 newtype State s a = State {
   state :: (s -> (s, a))
@@ -188,6 +192,7 @@ instance Fluffy (State s) where
 instance Misty (State s) where
 -- banana :: (a -> (State s) b) -> (State s) a -> (State s) b
 -- banana :: (a -> State {s -> (s, b)}) -> State {s -> (s, a)} -> State {s-> (s,b)}
+-- banana f st = jellybean $ furry' f st
   banana a2sb sa = State $ \ s ->  let (s', a) = state sa s
                                        sb = a2sb a
                                    in state sb s'
